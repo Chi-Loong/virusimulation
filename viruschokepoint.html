@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A virus simulation, visualized">
+    <meta name="author" content="Chi-Loong (www.vslashr.com)">
+    <meta name="google-site-verification" content="..." />
+
+    <meta property="og:title" content="A virus simulation, visualized">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://showcase.vslashr.com/virus">
+    <meta property="og:image" content="http://showcase.vslashr.com/virus/assets/img/virus_opengraph.jpg">
+    <meta property="og:image:width" content="1119" />
+    <meta property="og:image:height" content="600" />
+    <meta property="og:description" content="A virus simulation, visualized">
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@vslashr" />
+    <meta name="twitter:creator" content="@chiloong" />
+        
+    <title>A virus simulation, visualized</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/index.css">
+</head>
+<body>
+
+<div class="toggle-button">
+    <div class="menu-bar menu-bar-top"></div>
+    <div class="menu-bar menu-bar-middle"></div>
+    <div class="menu-bar menu-bar-bottom"></div>
+</div>
+<div class="menu-wrap">
+    <div class="menu-sidebar">
+        <ul class="menu">
+            <li><a href="index.html#baseline_introduction">Baseline: Intro</a></li>
+            <li><a href="index.html#baseline_model">Baseline: Model</a></li>
+            <li><a href="index.html#baseline_analysis">Baseline: Analysis</a></li>
+            <li><a class="scrolllink" data-target="#chokepoint_model">Chokepoint: Model</a></li>
+            <li><a class="scrolllink" data-target="#chokepoint_analysis">Chokepoint: Analysis</a></li>
+            <li class="menu-center"><a href="http://www.vslashr.com/" traget="_blank"><img id="logo" src="assets/img/VslashR_logo_white.svg"/></a></li>
+        </ul>
+    </div>
+</div>
+    
+<section id="chokepoint_model">
+    <div class="container">
+        <h2>Scenario: One chokepoint for an hour</h2>
+        <p>We have already seen that if you pack people into a few locations, it tends to facilitate viral spread under our model.</p>
+        <p>But what if you are just packing people for a short amount of time into one location? Surely going for a soccer match or for a church sermon for an hour can’t be that bad?</p>
+        <p>That is, of course, <i>wrong</i>.</p>
+        <p>And you can see it clearly visually below in our tweaked model.</p>
+        <p>Let’s assume this parameters:</p>
+        <ul>
+            <li><p>Same base model layout. 150 people live in this town, and there are 50 homes and 30 workplaces.</p></li>
+            <li><p>Schedules remain the same. People work from 9am to 5pm, else they are at home.</p></li>
+            <li><p>We are simulating the virus spread for 5 days.</p></li>
+            <li><p>However, on the 3rd day from 11am to 12pm, all the people in town gather for a church sermon. This is just to represent people clustering in one location for a short time - soccer match, Mardi Gras festival, etc.</p></li>
+            <li><p>I've disabled most parameters so you can concentrate on the visualization.</p></li>
+            <li><p>The one new parameter you can tweak is when the people in town go to the sermon - between days 0 and 4.</p></li>
+        </ul>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 text-center">
+                    <h4>Simulation Parameters</h4>
+                    <form>
+                        The day people go to church sermon (always from 11am to 12pm): 
+                        <select class="form-control" id="controls_day_chokepoint">
+                          <option>0</option>
+                          <option>1</option>
+                          <option>2</option>
+                          <option selected>3</option>
+                          <option>4</option>
+                        </select>
+                          
+                        Infection chance: 
+                        <select class="form-control" id="controls_infection_chance">
+                          <option value="0.01">1%</option>
+                          <option value="0.015">1.5%</option>
+                          <option value="0.02" selected>2%</option>
+                          <option value="0.025">2.5%</option>
+                          <option value="0.03">3%</option>
+                        </select>
+                        
+                        Simulation Speed: 
+                        <select class="form-control" id="controls_speed">
+                          <option value="750">Slow</option>
+                          <option value="500">Medium</option>
+                          <option value="250" selected>Fast</option>
+                          <option value="100">Blazing</option>
+                        </select>
+
+                        <button type="button" class="btn btn-danger" id="run_simulation">Run Simulation</button>
+                        
+                    </form>
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="chart">
+                    </svg>
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Simulation Results</h4>
+                            <p class="small-text" id="timetext"></p>
+                            <p class="small-text" id="shifttext"></p>
+                            <p class="small-text" id="sicktext"></p>
+                        </div>
+                    </div>
+            </div>
+            <div class="col-lg-9 text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="town">
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="chokepoint_analysis">
+    <div class="container">
+        <h2>Insights</h2>
+        <p>As expected, gathering lots of people in one or even a few locations is bad. It does not need to be for long, and just one hour in our model is enough.</p>
+        <p>Immediately what jumps out at you is that after the church sermon, the number of infected almost unfailingly spikes.</p>
+        <p>Especially once the town has a base of infected people, this multiplies exponentially, and then it quickly spreads to the rest of the town.</p>
+        <p>This is why mass gatherings (e.g. at a cinema, etc.) are not feasible in the short-term until the world can get a grip on COVID19 (antibody testing, vaccine, etc.)</p>
+    </div>
+    <div class="container">
+        <h2>Probability</h2>
+        <p>I am going to take a short detour into probability on how the risk is compounded, and if you're not interested in the math, please feel free to skip!</p>
+        <ul>
+        <li><p>As every sick person has a chance of infecting a healthy person at the same location (this is the infection chance variable), the more sick people there are in one location, the greater the risk is for the remaining healthy there.</p></li>
+        <li><p>Mathematically, the probability in this model is: <div class="mathFormula">$$compoundedChance = 1 - (1 - infectionChance)^{numberOfInfectedPeople}$$</div></p></li>
+        <li><p>For any healthy individual, the chance of you getting sick by one sick person is the infection chance, or 2% (0.02). Thus the chance of you remaining healthy is \(1 - infectionChance\) or 98% (0.98).</p></li>
+        <li><p>Because each chance of infection is independent, you can multiply them (\(P(A {\displaystyle \cap}B) = P(A)P(B)\)) according to the laws of <a href="https://en.wikipedia.org/wiki/Probability" target="_blank">probability</a>.</p></li>
+        <li><p>Let's say there are 3 sick people at your location. The chance of remaining healthy after factoring all 3 chances is then \(0.98 \times 0.98 \times 0.98\).</p></li>
+        <li><p>Thus the compounded chance of getting sick for each healthy person at the location is \(1 - 0.98^3\), or about 5.88% (0.0588)</p></li>
+        </ul>
+    </div>
+    <div class="container">
+        <h2>Repeated simulations</h2>
+        <p>And just like in the baseline model, we're going to run 10,000 simulation runs, comparing a town without a church sermon and a town with one.</p>
+    </div>
+        <div class="container">
+        <div class="row">
+            <div class="col-lg-6 text-center">
+                <h3>No Church Sermon</h3>
+                <img class="histogram" src="assets/img/chokepoint_2_nochurch.jpg">
+            </div>
+            <div class="col-lg-6 text-center">
+                <h3>With Church Sermon</h3>
+                <img class="histogram" src="assets/img/chokepoint_2_withchurch.jpg">
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <p><b>Parameters: </b>150 people town, 50 homes, 30 workplaces, 5 days simulation time, 2% infection rate.</p>
+                        <p>Everything is the same <i>except</i> one town has a church sermon on day 3 at 11am where everyone attends. The other town everyone remains at work.</p>
+                        <p>Both scenario simulations run 10,000 times.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <p>As can be clearly seen, in the town with the church model, the infection rate is extremely likely to be high in this scenario.</p>
+        <p>Again, if you would like to see this and play with it yourself, check out the code on GitHub.</p>
+    </div>
+    <div class="container">
+        <div class="text-center">
+            <a href="index.html"><button type="button" class="btn btn-dark">Scenario: Baseline Model</button></a>
+        </div>
+    </div>
+</section>
+
+<script src="assets/js/chance.min.js"></script>
+<script src="assets/js/jquery-3.1.1.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/d3.min.js"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="assets/js/TweenMax-2.1.3.min.js"></script>
+<script src="assets/js/ScrollToPlugin.min.js"></script>
+<script src="assets/js/menu.js"></script>
+<script src="assets/js/viruschokepoint.js"></script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-38155188-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    
+</body>
+</html>
